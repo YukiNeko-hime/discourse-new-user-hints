@@ -1,0 +1,58 @@
+<!-- banner for trust level 0 users -->
+<script type="text/discourse-plugin" version="0.8.25">
+  var h = require('virtual-dom').h;
+  var iconNode = require("discourse-common/lib/icon-library").iconNode;
+  var keyValueStore = require("discourse/lib/push-notifications").keyValueStore;
+  var RawHtml = require("discourse/widgets/raw-html").default;
+  
+  // create the widget using the api
+  api.createWidget("new-user-banner", {
+    tagName: "div.row",
+    buildKey: attrs => `new-user-banner`,
+    
+    defaultState() {
+      // the state is stored as a cookie with keyValueStore
+      return {dismissed: Boolean(keyValueStore.getItem("new-user-dismissed"))}
+    },
+    
+    html() {
+      // show the banner only to logged in users that have trust level 0
+      let user = this.currentUser;
+      if ( user && user.trust_level == 0 && !this.state.dismissed ) {
+        // process possible html tags in the message
+        let message = new RawHtml( {html: "<span>" + settings.banner_message + "</span>"} );
+        
+        let btn = h( "div.close", iconNode("times") );
+        let info = h( "div#new-user-hints.info", message);
+        
+        let banner = h( "div.new_user_banner.alert.alert-info", [info, btn] )
+        
+        return banner
+      }
+    },
+    
+    click(event) {
+      if (
+        event.target.classList.contains("d-icon-times") ||
+        event.target.classList.contains("close")
+      ) {
+        this.dismiss()
+      }
+    },
+    
+    dismiss() {
+      // dismiss the notice and store the state as a cookie
+      // incognito users might see the notice again,
+      // but most users reach trust level 1 quickly
+      this.state.dismissed = true;
+      keyValueStore.setItem("new-user-dismissed", true);
+    }
+  });
+</script>
+
+<!-- mount the widget at the space reserved for notices -->
+<script type="text/x-handlebars" data-template-name="/connectors/top-notices/new-user-banner">
+  {{#if (theme-setting 'banner_message')}}
+    {{mount-widget widget="new-user-banner"}}
+  {{/if}}
+</script>

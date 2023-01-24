@@ -1,0 +1,6 @@
+banner_message:
+  type: string
+  default: ""
+  description:
+    en: Banner message, shown for new users (trust_level_0).
+    fi: Uusille käyttäjille (luottamustaso_0) näytettävä banneriteksti.

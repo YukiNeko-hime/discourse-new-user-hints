@@ -1,0 +1,12 @@
+{
+  "name": "new-user-hints",
+  "component": true,
+  "license_url": https://opensource.org/licenses/GPL-3.0,
+  "authors": Lumi,
+  "theme_version": 1.0.0,
+  "assets": {
+  },
+  "color_schemes": {
+  },
+  "learn_more": "https://meta.discourse.org/t/beginners-guide-to-using-discourse-themes/91966"
+}
